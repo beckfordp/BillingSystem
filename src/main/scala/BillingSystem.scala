@@ -16,20 +16,17 @@ case class BillingSystem() {
   }
 
   private def findItem(name :String): Option[Item] = {
-    BillingSystem.inventory.find(x => name == x._1) match {
-      case None => None
-      case Some((_, item))  => Some(item)
-    }
+    BillingSystem.inventory.find(name == _._1).map(_._2)
   }
 }
 
 case class Bill(items: List[Item]) {
 
-  def allDrinks = items.forall(i => i.isInstanceOf[Drink])
+  def allDrinks = items.forall(_.isInstanceOf[Drink])
 
-  def anyFood = items.exists(i => i.isInstanceOf[Food])
+  def anyFood = items.exists(_.isInstanceOf[Food])
 
-  def hotFood = items.exists(i => i.isInstanceOf[HotFoodItem])
+  def hotFood = items.exists(i => i.isInstanceOf[Hot] && i.isInstanceOf[Food])
 
   def serviceCharge: Double = {
   val charge = 
@@ -37,16 +34,16 @@ case class Bill(items: List[Item]) {
       0.00
     else if (anyFood)
       if (hotFood)
-        sum * 0.20
+        itemTotal * 0.20
         else
-          sum * 0.10
+          itemTotal * 0.10
     else
       0.0
 
     BigDecimal(charge).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble
   }
 
-  def sum: Double = items.map(_.price).foldLeft(0.0)((a, b) => a + b)
+  def itemTotal: Double = items.map(_.price).foldLeft(0.0)((a, b) => a + b)
   
 }
 

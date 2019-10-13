@@ -9,12 +9,17 @@ class BillingSystemSpec extends FlatSpec with Matchers {
 
     it should "create bill" in {
         val bill = BillingSystem().createBill(List("Cola"))
-        bill.items shouldBe(List(DrinkItem("Cola", 0.50)))
+        bill.items should contain only(DrinkItem("Cola", 0.50))
     }
 
-    it should "create bill with total" in {
+    it should "ignore unknown order items" in {
+      val bill = BillingSystem().createBill(List("Unknown"))
+      bill.items shouldBe (Nil)
+    }
+
+    it should "create bill with item total" in {
       val bill = BillingSystem().createBill(List("Cola", "Coffee", "Cheese Sandwich"))
-      bill.sum shouldBe(3.50)
+      bill.itemTotal shouldBe(3.50)
     }
 
     it should "create bill with no service charge if all items are drinks" in {
