@@ -30,7 +30,7 @@ case class Bill(items: List[Item]) {
     BigDecimal(cappedServiceCharge).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble
   }
 
-  def itemTotal: Double = items.map(_.price).foldLeft(0.0)((a, b) => a + b)
+  def itemTotal: Double = items.map(_.price).foldLeft(0.0)(_ + _)
 }
 
 trait Item {
