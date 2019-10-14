@@ -23,24 +23,27 @@ case class BillingSystem() {
 }
 
 case class Bill(items: List[Item]) {
-  def serviceCharge: Double = {
+  val serviceCharge: Double = {
     val maxServiceCharge = items.map(_.serviceCharge).foldLeft(0.0)(max)
     val charge = itemTotal * maxServiceCharge
     val cappedServiceCharge = if (maxServiceCharge == 0.2 && (charge >= 20.00)) 20.00 else charge
     BigDecimal(cappedServiceCharge).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble
   }
 
-  def itemTotal: Double = items.map(_.price).foldLeft(0.0)((a, b) => a + b)
+  val itemTotal: Double = items.map(_.price).foldLeft(0.0)((a, b) => a + b)
 }
 
-abstract class Item(val name: String, val price: Double, val serviceCharge: Double = 0.0)
-case class DrinkItem(override val name: String, override val price: Double) extends Item(name: String, price: Double)
-case class HotDrinkItem(override val name: String, override val price: Double) extends Item(name: String, price: Double)
-case class FoodItem(override val name: String, override val price: Double) extends Item(name: String, price: Double) {
-  override val serviceCharge = 0.1
+trait Item { def name: String
+  def price: Double
+  def serviceCharge: Double = 0.0
 }
-case class HotFoodItem(override val name: String, override val price: Double) extends Item(name: String, price: Double) {
-  override val serviceCharge = 0.2
+case class DrinkItem(override val name: String, override val price: Double) extends Item
+case class HotDrinkItem(override val name: String, override val price: Double) extends Item
+case class FoodItem(override val name: String, override val price: Double) extends Item {
+  override def serviceCharge = 0.1
+}
+case class HotFoodItem(override val name: String, override val price: Double) extends Item {
+  override def serviceCharge = 0.2
 }
 
 

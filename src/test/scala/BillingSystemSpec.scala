@@ -17,12 +17,12 @@ class BillingSystemSpec extends FlatSpec with Matchers {
       bill.items shouldBe (Nil)
     }
 
-  it should "handle empty order items" in {
-    val bill = BillingSystem().createBill(Nil)
-    bill.items shouldBe (Nil)
-    bill.serviceCharge shouldBe (0.0)
-    bill.itemTotal shouldBe (0.0)
-  }
+    it should "process an empty order" in {
+      val bill = BillingSystem().createBill(Nil)
+      bill.items shouldBe (Nil)
+      bill.serviceCharge shouldBe (0.0)
+      bill.itemTotal shouldBe (0.0)
+    }
 
     it should "create bill with item total" in {
       val bill = BillingSystem().createBill(List("Cola", "Coffee", "Cheese Sandwich"))
