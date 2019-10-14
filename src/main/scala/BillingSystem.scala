@@ -38,14 +38,10 @@ trait Item {
   def price: Double
   def serviceCharge: Double = 0.0
 }
-case class DrinkItem(override val name: String, override val price: Double) extends Item
-case class HotDrinkItem(override val name: String, override val price: Double) extends Item
-case class FoodItem(override val name: String, override val price: Double) extends Item {
-  override def serviceCharge = 0.1
-}
-case class HotFoodItem(override val name: String, override val price: Double) extends Item {
-  override def serviceCharge = 0.2
-}
+case class DrinkItem(name: String, price: Double) extends Item
+case class HotDrinkItem(name: String, price: Double) extends Item
+case class FoodItem(name: String, price: Double) extends Item { override def serviceCharge = 0.1 }
+case class HotFoodItem(name: String,price: Double) extends Item { override def serviceCharge = 0.2 }
 
 
 
