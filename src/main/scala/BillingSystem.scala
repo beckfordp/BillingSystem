@@ -3,11 +3,11 @@ package com.capgemmini
 import scala.math.max
 
 object BillingSystem {
-  val inventory: List[(String, Item)] = List(
-    ("Cola", DrinkItem("Cola", 0.50)) ,
-    ("Coffee", HotDrinkItem("Coffee", 1.00)),
-    ("Cheese Sandwich", FoodItem("Cheese Sandwich", 2.00)),
-    ("Steak Sandwich", HotFoodItem("Steak Sandwich", 4.50))
+  val inventory: List[Item] = List(
+    DrinkItem("Cola", 0.50),
+    HotDrinkItem("Coffee", 1.00),
+    FoodItem("Cheese Sandwich", 2.00),
+    HotFoodItem("Steak Sandwich", 4.50)
   )
 }
 
@@ -18,7 +18,7 @@ case class BillingSystem() {
   }
 
   private def findItem(name :String): Option[Item] = {
-    BillingSystem.inventory.find(name == _._1).map(_._2)
+    BillingSystem.inventory.find(name == _.name)
   }
 }
 
