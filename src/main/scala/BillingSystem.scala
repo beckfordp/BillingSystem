@@ -1,5 +1,7 @@
 package com.capgemmini
 
+import scala.math.max
+
 object BillingSystem {
   val inventory: List[(String, Item)] = List(
     ("Cola", DrinkItem("Cola", 0.50)) ,
@@ -21,45 +23,25 @@ case class BillingSystem() {
 }
 
 case class Bill(items: List[Item]) {
-
-  def allDrinks = items.forall(_.isInstanceOf[Drink])
-
-  def anyFood = items.exists(_.isInstanceOf[Food])
-
-  def hotFood = items.exists(i => i.isInstanceOf[Hot] && i.isInstanceOf[Food])
-
   def serviceCharge: Double = {
-  val charge = 
-    if (allDrinks)
-      0.00
-    else if (anyFood)
-      if (hotFood)
-        itemTotal * 0.20
-        else
-          itemTotal * 0.10
-    else
-      0.0
-
-    BigDecimal(charge).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble
+    val maxServiceCharge = items.map(_.serviceCharge).foldLeft(0.0)(max)
+    val charge = itemTotal * maxServiceCharge
+    val cappedServiceCharge = if (maxServiceCharge == 0.2 && (charge >= 20.00)) 20.00 else charge
+    BigDecimal(cappedServiceCharge).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble
   }
 
   def itemTotal: Double = items.map(_.price).foldLeft(0.0)((a, b) => a + b)
-  
 }
 
-trait Drink
-trait Food
-trait Hot
-
-abstract class Item(val name: String, val price: Double)
-
-case class DrinkItem(override val name: String, override val price: Double) extends Item(name: String, price: Double) with Drink
-
-case class HotDrinkItem(override val name: String, override val price: Double) extends Item(name: String, price: Double) with Drink with Hot
-
-case class FoodItem(override val name: String, override val price: Double) extends Item(name: String, price: Double) with Food
-
-case class HotFoodItem(override val name: String, override val price: Double) extends Item(name: String, price: Double) with Food with Hot
+abstract class Item(val name: String, val price: Double, val serviceCharge: Double = 0.0)
+case class DrinkItem(override val name: String, override val price: Double) extends Item(name: String, price: Double)
+case class HotDrinkItem(override val name: String, override val price: Double) extends Item(name: String, price: Double)
+case class FoodItem(override val name: String, override val price: Double) extends Item(name: String, price: Double) {
+  override val serviceCharge = 0.1
+}
+case class HotFoodItem(override val name: String, override val price: Double) extends Item(name: String, price: Double) {
+  override val serviceCharge = 0.2
+}
 
 
 

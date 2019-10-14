@@ -36,5 +36,21 @@ class BillingSystemSpec extends FlatSpec with Matchers {
       val bill = BillingSystem().createBill(List("Cola", "Steak Sandwich"))
       bill.serviceCharge shouldBe(1.00)
     }
+
+    it should "create bill with 20% service charge if hot and cold food" in {
+      val bill = BillingSystem().createBill(List("Cheese Sandwich", "Steak Sandwich"))
+      bill.serviceCharge shouldBe(1.30)
+    }
+
+    it should "create bill with max hot food service charge of 20 pounds" in {
+      val bill = BillingSystem().createBill(List(
+        "Steak Sandwich", "Steak Sandwich", "Steak Sandwich", "Steak Sandwich", "Steak Sandwich",
+        "Steak Sandwich", "Steak Sandwich", "Steak Sandwich", "Steak Sandwich", "Steak Sandwich",
+        "Steak Sandwich", "Steak Sandwich", "Steak Sandwich", "Steak Sandwich", "Steak Sandwich",
+        "Steak Sandwich", "Steak Sandwich", "Steak Sandwich", "Steak Sandwich", "Steak Sandwich",
+        "Steak Sandwich", "Steak Sandwich", "Coffee", "Cola"
+      ))
+      bill.serviceCharge shouldBe(20.00)
+    }
 }
 
