@@ -23,17 +23,18 @@ case class BillingSystem() {
 }
 
 case class Bill(items: List[Item]) {
-  val serviceCharge: Double = {
+  def serviceCharge: Double = {
     val maxServiceCharge = items.map(_.serviceCharge).foldLeft(0.0)(max)
     val charge = itemTotal * maxServiceCharge
     val cappedServiceCharge = if (maxServiceCharge == 0.2 && (charge >= 20.00)) 20.00 else charge
     BigDecimal(cappedServiceCharge).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble
   }
 
-  val itemTotal: Double = items.map(_.price).foldLeft(0.0)((a, b) => a + b)
+  def itemTotal: Double = items.map(_.price).foldLeft(0.0)((a, b) => a + b)
 }
 
-trait Item { def name: String
+trait Item {
+  def name: String
   def price: Double
   def serviceCharge: Double = 0.0
 }
